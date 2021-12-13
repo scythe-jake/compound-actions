@@ -1,0 +1,72 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "This procedure emulates the registry installation of an Atera Networks remote management agent. Ransomware actors commonly use this procedure.",
+        "display_name": "T1072_-_Software_Deployment_Tools_ATERA",
+        "name": "T1072_-_Software_Deployment_Tools_ATERA",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "--cp 127.0.0.1:443 --secure true",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "2": {
+                "depends_on": "8a328046-158f-4bce-bc3c-3c9b5b177512",
+                "module": "controller",
+                "request": "--integrity",
+                "type": "message"
+            },
+            "3": {
+                "function": "ifelse",
+                "next": "8",
+                "step": "2",
+                "type": "decision",
+                "value": "High",
+                "verb": "does not contain"
+            },
+            "4": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd.exe /c reg ADD \"HKEY_LOCAL_MACHINE\\SOFTWARE\\ATERA Networks\\AlphaAgent\"",
+                "rtags": [
+                    "att&ck-technique:T1072"
+                ],
+                "type": "message"
+            },
+            "5": {
+                "time": "60",
+                "type": "delay"
+            },
+            "6": {
+                "name": "STEP",
+                "type": "assign",
+                "value": "CLEANUP"
+            },
+            "7": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd.exe /c reg delete \"HKEY_LOCAL_MACHINE\\SOFTWARE\\ATERA Networks\" /f",
+                "type": "message"
+            },
+            "8": {
+                "module": "controller",
+                "request": "--shutdown",
+                "rtags": [
+                    "scythe",
+                    "att&ck",
+                    "att&ck-tactic:TA0011",
+                    "att&ck-technique:T1219"
+                ],
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29"
+    }
+}

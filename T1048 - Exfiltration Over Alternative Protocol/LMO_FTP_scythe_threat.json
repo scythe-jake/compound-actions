@@ -1,0 +1,32 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "LMO FTP",
+        "display_name": "LMO FTP",
+        "name": "LMO FTP",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "{\"--cp\":\"127.0.0.1:443\",\"--multipart\":10240,\"--secure\":true}",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "request": "--load-runtime python3",
+                "type": "message"
+            },
+            "2": {
+                "module": "loader",
+                "request": "--load scythe_testing.scythe_lmo",
+                "type": "message"
+            },
+            "3": {
+                "module": "scythe_testing.scythe_lmo",
+                "request": "--ports [20,21] ",
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29"
+    }
+}

