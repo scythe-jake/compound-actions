@@ -104,4 +104,3 @@ AssemblyFile="C:\Windows\Microsoft.Net\Framework\v4.0.30319\Microsoft.Build.Task
     * `C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe .\msbuild.xml`
     * The SCYTHE client should connect with your SCYTHE server.
     * If the Powershell window is closed, connection will drop.
-    * Alternative, you may run the following command to execute the code in the background so that you may safely close your Powershell prompt: `C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe .\msbuild.xml &`
