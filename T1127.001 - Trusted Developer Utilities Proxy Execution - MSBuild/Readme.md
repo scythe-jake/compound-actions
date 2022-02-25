@@ -8,32 +8,6 @@ First, you must obtain shellcode that loads the malicious payload you wish to ex
 
 Create a Campaign in the SCYTHE UI. Then, follow the instructions below depending on your version of SCYTHE.
 
-## Using the msbuild_gen.py Script
-
-**The Python3 msbuild_gen.py script contained in this repository automates the processes below. The script is provided as-is and is not officially supported by SCYTHE. It is a proof of concept on how to use the SCYTHE shellcode in an automated and consistent build process.**
-
-For leveraging 32 bit shellcode downloaded:
-
-Running the following command with the shellcode file being named `shellcode32.bin` will result in a bad32.xml file created in the directory.
-```python
-python3 msbuild_gen.py shellcode32.bin 32
-```
-To then execute this, run the following in PowerShell
-```
-C:\Windows\Microsoft.NET\Framework\\v4.0.30319\MSBuild.exe .\\bad-32.xml
-```
-
-For leveraging 64 bit shellcode downloaded:
-
-Running the following command with the shellcode file being named `shellcode64.bin` will result in a bad64.xml file created in the directory.
-```python
-python3 msbuild_gen.py shellcode64.bin 64
-```
-To then execute this, run the following in PowerShell
-```
-C:\Windows\Microsoft.NET\Framework64\\v4.0.30319\MSBuild.exe .\\bad-64.xml
-```
-
 ### Pre-3.4
 
 In the Campaign List, select the Campaign that you created to view its detailed page. Click the "More Actions..." dropdown menu, and select "Direct-Downloads Links". You will be shown a list of download links. Each is the SCYTHE client in a different executable format. To download the shellcode format, choose either the 32-bit or 64-bit "Reflective Loader + DLL" link and paste it into your browser. The shellcode should begin downloading.
@@ -41,6 +15,33 @@ In the Campaign List, select the Campaign that you created to view its detailed 
 ### 3.4
 
 In the Campaign List, select the Campaign that you created to view its detailed page. Click the "Download" button. You will be shown a "Download Campaign Client" menu. Select your preferred architecture (64-bit or 32-bit) and "Shellcode + DLL" for the File Type. Click the Download SCYTHE Client button. The shellcode should begin downloading.
+
+
+## Using the msbuild_gen.py Script
+
+**The Python3 msbuild_gen.py script contained in this repository automates the processes below. The script is provided as-is and is not officially supported by SCYTHE. It is a proof of concept on how to use the SCYTHE shellcode in an automated and consistent build process.**
+
+### For leveraging 32 bit shellcode downloaded:
+
+Running the following command with the shellcode file being named `shellcode32.bin` will result in a bad32.xml file created in the directory.
+```python
+python3 msbuild_gen.py shellcode32.bin 32
+```
+To then execute this, run the following in PowerShell
+```
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe .\bad-32.xml
+```
+
+### For leveraging 64 bit shellcode downloaded:
+
+Running the following command with the shellcode file being named `shellcode64.bin` will result in a bad64.xml file created in the directory.
+```python
+python3 msbuild_gen.py shellcode64.bin 64
+```
+To then execute this, run the following in PowerShell
+```
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe .\bad-64.xml
+```
 
 ## Creating the Shellcode Runner for 32-bit
 
