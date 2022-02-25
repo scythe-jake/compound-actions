@@ -91,7 +91,7 @@
             "10": {
                 "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
                 "module": "run",
-                "request": "wmic process",
+                "request": "wmic process get /format:list",
                 "rtags": [
                     "att&ck-technique:T1057",
                     "att&ck-technique:T1047"
