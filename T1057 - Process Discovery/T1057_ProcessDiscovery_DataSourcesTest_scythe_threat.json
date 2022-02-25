@@ -1,0 +1,131 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "Process Discovery technique campaign test that leverages multiple data sources including Windows Command Line, PowerShell, Unmanaged PowerShell, WMI, and Native API",
+        "display_name": "T1057_ProcessDiscovery_DataSourcesTest",
+        "name": "T1057_ProcessDiscovery_DataSourcesTest",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "{\"--cp\":\"tim.scythe.services:443\",\"--secure\":true,\"--multipart\":10240}",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "2": {
+                "module": "loader",
+                "module_to_load": "upsh",
+                "request": "--load upsh",
+                "type": "message"
+            },
+            "3": {
+                "module": "loader",
+                "module_to_load": "processes",
+                "request": "--load processes",
+                "type": "message"
+            },
+            "4": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "tasklist",
+                "rtags": [
+                    "att&ck-technique:T1057"
+                ],
+                "type": "message"
+            },
+            "5": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd /c tasklist",
+                "rtags": [
+                    "att&ck-technique:T1057",
+                    "att&ck-technique:T1059.003"
+                ],
+                "type": "message"
+            },
+            "6": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "powershell Get-Process",
+                "rtags": [
+                    "att&ck-technique:T1057",
+                    "att&ck-technique:T1059.001"
+                ],
+                "type": "message"
+            },
+            "7": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "powershell get-wmiObject -class Win32_Process",
+                "rtags": [
+                    "att&ck-technique:T1057",
+                    "att&ck-technique:T1059.001"
+                ],
+                "type": "message"
+            },
+            "8": {
+                "depends_on": "ed8a7322-630d-4cc1-b065-8c2361d9f45d",
+                "module": "upsh",
+                "request": "--cmd Get-Process",
+                "rtags": [
+                    "att&ck-technique:T1057",
+                    "att&ck-technique:T1059.001"
+                ],
+                "type": "message"
+            },
+            "9": {
+                "depends_on": "ed8a7322-630d-4cc1-b065-8c2361d9f45d",
+                "module": "upsh",
+                "request": "--cmd \"get-wmiObject -class Win32_Process\" ",
+                "rtags": [
+                    "att&ck-technique:T1057",
+                    "att&ck-technique:T1059.001"
+                ],
+                "type": "message"
+            },
+            "10": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "wmic process get /format:list",
+                "rtags": [
+                    "att&ck-technique:T1057",
+                    "att&ck-technique:T1047"
+                ],
+                "type": "message"
+            },
+            "11": {
+                "depends_on": "62dc619d-529a-441f-87e4-89778eee9587",
+                "module": "processes",
+                "request": "",
+                "rtags": [
+                    "scythe",
+                    "att&ck",
+                    "att&ck-tactic:TA0007",
+                    "att&ck-technique:T1057",
+                    "att&ck-technique:T1106"
+                ],
+                "type": "message"
+            },
+            "12": {
+                "module": "controller",
+                "request": "--shutdown",
+                "rtags": [
+                    "scythe",
+                    "att&ck",
+                    "att&ck-tactic:TA0011",
+                    "att&ck-technique:T1219"
+                ],
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29",
+        "tags": [
+            "att&ck-technique:T1057"
+        ]
+    }
+}
