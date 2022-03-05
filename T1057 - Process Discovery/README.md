@@ -5,7 +5,7 @@ Adversaries may perform process discovery to learn more about the environment th
 This compound action is meant to test multiple data sources by leveraging several different execution methods in Windows:
 <ul>
 <li>Windows Command Line</li>
-<li>Windows PowerShell<li>
+<li>Windows PowerShell</li>
 <li>Windows Unmanaged PowerShell</li>
 <li>Windows Management Instrumentation (WMI)</li>
 <li>Native API</li>
