@@ -8,7 +8,7 @@
         "script": {
             "0": {
                 "conf": {
-                    "--cp": "shawndemo.scythe.services:443",
+                    "--cp": "127.0.0.1:443",
                     "--multipart": 10240,
                     "--secure": true
                 },
