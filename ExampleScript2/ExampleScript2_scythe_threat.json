@@ -7,11 +7,15 @@
         "operating_system_name": "windows",
         "script": {
             "0": {
+<<<<<<< HEAD
+                "conf": "{\"--cp\":\"127.0.0.1:443\",\"--multipart\":10240,\"--secure\":true}",
+=======
                 "conf": {
                     "--cp": "127.0.0.1:443",
                     "--multipart": 10240,
                     "--secure": true
                 },
+>>>>>>> 3809f43a5fd7720adcde15eca996e51174e530af
                 "module": "https",
                 "type": "initialization"
             },
@@ -92,6 +96,41 @@
                 "depends_on": "6f076e51-2e23-46c2-b88e-4505902f960e",
                 "module": "downloader",
                 "request": "--src \"VFS:/shared/threats/ExampleScript2/PleaseReadMe.txt\" --dest $(10).response.extract(\".*\\\\\\\\\")[0].suffix(\"PleaseReadMe.txt\")",
+                "type": "message"
+            },
+            "14": {
+                "name": "STEP",
+                "type": "assign",
+                "value": "CLEANUP"
+            },
+            "15": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "16": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd /c del $(10).response",
+                "type": "message"
+            },
+            "17": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd /c del $(10).response.suffix(\".$xb\")",
+                "type": "message"
+            },
+            "18": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd /c del $(10).response.extract(\".*\\\\\\\\\")[0].suffix(\"PleaseReadMe.txt\")",
+                "type": "message"
+            },
+            "19": {
+                "depends_on": "8a328046-158f-4bce-bc3c-3c9b5b177512",
+                "module": "controller",
+                "request": "--shutdown",
                 "type": "message"
             }
         },

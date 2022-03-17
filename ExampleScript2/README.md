@@ -49,4 +49,15 @@ Please refer to section 2.2 - Automate Campaign Actions in the User Guide for do
         * `extract(".*\\\\")[0]` - The `extract` function produces an array (a Python `list`) of strings. In this case there is only one element in the array (the 0th element). So we access it using Python's indexing syntax. The result will be the path of the directory in which the `.xls` file resides.
         * `.suffix("PleaseReadMe.txt")` - The `suffix` function in SCYTHE's automation language appends a string onto another string. In this case, we are appending "PleaseReadMe.txt" onto the path of the directory.
         * After all portions are evaluated, the result is the directory path + "PleaseReadMe.txt" as the final path of where the text file should be placed. The file will be copied from the VFS and written to that path.
-
+13. `STEP = CLEANUP`
+    * Assignment steps can also be used to add comments in your SCYTHE Campaign. In this case, we use assignment to state that the following steps are for cleanup.
+14. `loader --load run`
+    * Loads the `run` module, which creates new processes.
+15. `run cmd /c del $(10).response`
+    * Uses the Windows command shell to run a one-liner that deletes the `.xls` file that we created earlier.
+16. `run cmd /c del $(10).response.suffix(".$xb")`
+    * Deletes the encrypted version of the `.xls` file that we created earlier.
+17. `run cmd /c del $(10).response.extract(".*\\\\")[0].suffix("PleaseReadMe.txt")`
+    * Deletes the text file that we place don the target filesystem earlier.
+18. `controller --shutdown`
+    * This is a special command that shuts down the SCYTHE client. This will cause the client to go inactive.
