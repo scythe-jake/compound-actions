@@ -1,7 +1,7 @@
 {
     "threat": {
         "category": "User-Defined",
-        "description": "An example Campaign that demonstrates advanced usage of Campaign variables, use of command output, and pattern matching.",
+        "description": "An example Campaign that demonstrates advanced usage of Campaign variables, use of command output, and pattern matching. This is derived from Example Script 2 in Appendix B of the SCYTHE User Guide.",
         "display_name": "ExampleScript2",
         "name": "ExampleScript2",
         "operating_system_name": "windows",
