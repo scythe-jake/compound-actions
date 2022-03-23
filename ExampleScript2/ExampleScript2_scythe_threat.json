@@ -7,15 +7,7 @@
         "operating_system_name": "windows",
         "script": {
             "0": {
-<<<<<<< HEAD
                 "conf": "{\"--cp\":\"127.0.0.1:443\",\"--multipart\":10240,\"--secure\":true}",
-=======
-                "conf": {
-                    "--cp": "127.0.0.1:443",
-                    "--multipart": 10240,
-                    "--secure": true
-                },
->>>>>>> 3809f43a5fd7720adcde15eca996e51174e530af
                 "module": "https",
                 "type": "initialization"
             },
