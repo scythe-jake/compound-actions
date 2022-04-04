@@ -1,0 +1,53 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "T1021.001 Remote Services: Remote Desktop Protocol",
+        "display_name": "T1021_001-RemoteService-RDP",
+        "name": "T1021_001-RemoteService-RDP",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "{\"--cp\":\"127.0.0.1:443\",\"--secure\":true,\"--multipart\":10240,\"--heartbeat\":1}",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "2": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "powershell -c type C:\\emulations\\lateral.txt",
+                "rtags": [],
+                "type": "message"
+            },
+            "3": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "depends_on_actions": "{\"templateString\":\"powershell -c Test-NetConnection -ComputerName $(^).response[\\\"result\\\"].strip(\\\\\\\"\\\\\\\\r\\\\\\\\n\\\\\\\").strip(\\\\\\\"\\\\\\\\n\\\\\\\") -Port 3389\",\"dependsOnSteps\":[{\"step\":2,\"index\":49,\"xrand\":\"f9343cfcdabf25edb0e71961f7486c9c\"}]}",
+                "module": "run",
+                "request": "powershell -c Test-NetConnection -ComputerName $(2).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\") -Port 3389",
+                "rtags": [
+                    "att&ck-technique:T1021.001",
+                    "att&ck-technique:T1059.001"
+                ],
+                "type": "message"
+            },
+            "4": {
+                "module": "controller",
+                "request": "--shutdown",
+                "rtags": [
+                    "scythe",
+                    "att&ck",
+                    "att&ck-tactic:TA0011",
+                    "att&ck-technique:T1219"
+                ],
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29",
+        "tags": []
+    }
+}
