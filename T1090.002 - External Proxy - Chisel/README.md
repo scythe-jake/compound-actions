@@ -4,6 +4,12 @@ Uses the open source tool [chisel](https://github.com/jpillora/chisel) to perfor
 
 This Compound Action assumes that a chisel server is running on a server you control. This chisel server's configuration is independant of the SCYTHE server. chisel is very easy to deploy. Simply download the released executable from the GitHub repository specific to your operating system and execute it with appropriate command-line parameters (detailed below). The SCYTHE Campaign has variables for the chisel server IP, chisel server port, and the reverse port forwarding port. You may update these to match your configuration.
 
+Video guide:
+
+
+https://user-images.githubusercontent.com/17090738/166065694-8fb7171a-b00e-4fc8-b69e-33ffade8ab5b.mp4
+
+
 ## Import the Compound Action into SCYTHE
 1. Zip up this directory.
 2. From the SCYTHE GUI, click Threat Manager - Migrate Threats
