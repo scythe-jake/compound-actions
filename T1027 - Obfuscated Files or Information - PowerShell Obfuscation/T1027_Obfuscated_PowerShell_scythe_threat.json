@@ -1,0 +1,88 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "Get-Process Powershell command let obfuscated several ways",
+        "display_name": "T1027_Obfuscated_PowerShell",
+        "name": "T1027_Obfuscated_PowerShell",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "{\"--cp\":\"127.0.0.1:443\",\"--secure\":true,\"--multipart\":10240}",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "2": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "powershell Get-Process",
+                "rtags": [
+                    "att&ck-technique:T1059.001",
+                    "att&ck-technique:T1057"
+                ],
+                "type": "message"
+            },
+            "3": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "powershell g`Et`-pROcesS",
+                "rtags": [
+                    "att&ck-technique:T1057",
+                    "att&ck-technique:T1059.001",
+                    "att&ck-technique:T1027"
+                ],
+                "type": "message"
+            },
+            "4": {
+                "module": "loader",
+                "module_to_load": "upsh",
+                "request": "--load upsh",
+                "type": "message"
+            },
+            "5": {
+                "depends_on": "ed8a7322-630d-4cc1-b065-8c2361d9f45d",
+                "module": "upsh",
+                "request": "--cmd g`Et`-pROcesS",
+                "rtags": [
+                    "att&ck-technique:T1057",
+                    "att&ck-technique:T1059.001",
+                    "att&ck-technique:T1027"
+                ],
+                "type": "message"
+            },
+            "6": {
+                "depends_on": "ed8a7322-630d-4cc1-b065-8c2361d9f45d",
+                "module": "upsh",
+                "request": "--vfs_filepath VFS:/shared/threats/compound/Get-Process.ps1",
+                "rtags": [
+                    "att&ck-technique:T1057",
+                    "att&ck-technique:T1059.001",
+                    "att&ck-technique:T1027"
+                ],
+                "type": "message"
+            },
+            "7": {
+                "module": "controller",
+                "request": "--shutdown",
+                "rtags": [
+                    "scythe",
+                    "att&ck",
+                    "att&ck-tactic:TA0011",
+                    "att&ck-technique:T1219"
+                ],
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29",
+        "tags": [
+            "att&ck-technique:T1027",
+            "att&ck-technique:T1059.001",
+            "att&ck-technique:T1057"
+        ]
+    }
+}
