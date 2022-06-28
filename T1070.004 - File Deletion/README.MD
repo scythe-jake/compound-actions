@@ -11,3 +11,6 @@ This compound action seeks to emulate the usage of adversaries downloading Windo
 5. Click Threat Manager - Threat Catalog
 6. Find the imported Compound Action and click the tag icon
 7. Tag the MITRE ATT&CK Technique for the Compound Action
+
+## SIGMA Detection
+1. [Sysinternals SDelete Registry Keys](https://github.com/SigmaHQ/sigma/blob/bc316855f6bcb0233f5e66bcba32beea36d4feb8/rules/windows/registry/registry_add/registry_add_sysinternals_sdelete_registry_keys.yml)
